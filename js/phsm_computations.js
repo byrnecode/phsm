@@ -142,7 +142,7 @@ var PHSM = (function () {
         var commission = charges.commission,
             commissionMinimum = charges.commissionMinimum,
             // get (commission)% of gross amount
-            computedCommission = (commission / 100) * grossAmount;
+            computedCommission = this.whatIsPercentOf(commission, grossAmount);
 
         // check if computed commission is less than the minimum commission of broker
         if (computedCommission < commissionMinimum) {
@@ -161,7 +161,7 @@ var PHSM = (function () {
     var computeVat = function (commission) {
         var vat = charges.vat,
             // get (vat)% of commission
-            computedVat = (vat / 100) * commission;
+            computedVat = this.whatIsPercentOf(vat, commission);
         
         // roundof to 4 decimal and remove trailing zeros
         computedVat = +computedVat.toFixed(4);
@@ -176,7 +176,7 @@ var PHSM = (function () {
     var computePseTransFee = function (grossAmount) {
         var pseTransFee = charges.pseTransFee,
             // get (pse trans fee)% of gross amount
-            computedPseTransFee = (pseTransFee / 100) * grossAmount;
+            computedPseTransFee = this.whatIsPercentOf(pseTransFee, grossAmount);
         
         // roundof to 4 decimal and remove trailing zeros
         computedPseTransFee = +computedPseTransFee.toFixed(4);
@@ -191,7 +191,7 @@ var PHSM = (function () {
     var computeSccp = function (grossAmount) {
         var sccp = charges.sccp,
             // get (sccp fee)% of gross amount
-            computedSccp = (sccp / 100) * grossAmount;
+            computedSccp = this.whatIsPercentOf(sccp, grossAmount);
         
         // roundof to 4 decimal and remove trailing zeros
         computedSccp = +computedSccp.toFixed(4);
@@ -206,7 +206,7 @@ var PHSM = (function () {
     var computeSalesTax = function (grossAmount) {
         var salesTax = charges.salesTax,
             // get (sales tax)% of gross amount
-            computedSalesTax = (salesTax / 100) * grossAmount;
+            computedSalesTax = this.whatIsPercentOf(salesTax, grossAmount);
         
         // roundof to 4 decimal and remove trailing zeros
         computedSalesTax = +computedSalesTax.toFixed(4);
@@ -231,6 +231,52 @@ var PHSM = (function () {
     // PUBLIC METHODS
     // ************************************************************************
     return {
+
+        // ====================================================================
+        // public method to compute percent value
+        // params: int/float - percent, target
+        // return: int/float - computed value
+        // sample: What is 10% of 100? answer = 10
+        // where 10% = percent, 100 = target, return = 10
+        // ====================================================================
+        whatIsPercentOf: function (percent, target) {
+            var result = (percent / 100) * target;
+
+            // roundof to 4 decimal and remove trailing zeros
+            result = +result.toFixed(4);
+            return result;
+        },
+
+        // ====================================================================
+        // public method to compute percent
+        // params: int/float - value, target
+        // return: int/float - computed percent
+        // sample: 10 is what percent of 100? answer = 10%
+        // where 10 = value, 100 = target, return = 10%
+        // ====================================================================
+        isWhatPercentOf: function (value, target) {
+            var result = (value / target) * 100;
+
+            // roundof to 4 decimal and remove trailing zeros
+            result = +result.toFixed(4);
+            return result;
+        },
+
+        // ====================================================================
+        // public method to compute percent difference
+        // params: int/float - from, to
+        // return: int/float - computed percent difference
+        // sample: What is the percent difference from 50 to 100? answer = 100%
+        // where 50 = from, 100 = to, return = 100%
+        // ====================================================================
+        getPercentDiff: function (from, to) {
+            var diff = to - from,
+                percentDiff = this.isWhatPercentOf(diff, from);
+
+            // roundof to 4 decimal and remove trailing zeros
+            percentDiff = +percentDiff.toFixed(4);
+            return percentDiff;
+        },
         
         // ====================================================================
         // public method to compute how many shares can you buy at certain price with certain money
@@ -436,11 +482,10 @@ var PHSM = (function () {
         // ====================================================================
         getProfit: function (sellingPrice, myAveragePrice, volume) {
             // compute
-            var diff = sellingPrice - myAveragePrice,
-                profitPercent = (diff / myAveragePrice) * 100;
+            var profitPercent = this.getPercentDiff(myAveragePrice, sellingPrice);
 
             //            profitPercent = +profitPercent.toFixed(4);
-            var profit = ((profitPercent / 100) * myAveragePrice) * volume;
+            var profit = this.whatIsPercentOf(profitPercent, myAveragePrice) * volume;
             console.log("profit percent without charges: " + profitPercent);
             
             var grossAmount = this.getGrossAmount(sellingPrice, volume);
@@ -453,7 +498,7 @@ var PHSM = (function () {
             var totalSellingCost = this.getTotalSellingCost(grossAmount);
             console.log("total selling cost: " + totalSellingCost);
             
-            var profitPercentBreakEven = (totalSellingFees / grossAmount) * 100;
+            var profitPercentBreakEven = this.isWhatPercentOf(totalSellingFees, grossAmount);
             console.log("profit percent breakeven: " + profitPercentBreakEven);
             profitPercent = profitPercent - profitPercentBreakEven;
 

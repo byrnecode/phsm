@@ -3,6 +3,12 @@ Tools for computations etc..
 
 Available public methods: 
 
+    whatIsPercentOf(percent, target)
+
+    isWhatPercentOf(value, target)
+
+    getPercentDiff(from, to)
+
     getBuyPreview(price, money)
 
     getGrossAmount(stockPrice, volume)
@@ -39,4 +45,4 @@ TODO:
 -probability computation ("what if I buy/sell at xx price, auto computation..")
 -change commission base on broker, have the ablity to change broker, perhaps have a ready-list of brokers with their commission
 -bullet proofing on functions parameters (null, number of params passed, type of data passed.. etc..)
--underscore for private variables and methods
+-optimized code! (variables, methods, etc..)
