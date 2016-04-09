@@ -1,5 +1,7 @@
+A JavaScript library for PH Stock Market (trading/investing)
+Tools for computations etc..
 
-available public methods: 
+Available public methods: 
 
     getBuyPreview(price, money)
 
