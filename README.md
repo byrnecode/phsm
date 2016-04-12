@@ -29,13 +29,13 @@
 ### TODO:
 
 * stop loss / trailing stop
-    1.
+    1. 
         * normal stop - will post a sell to the next available price of the specified stop (taking tick size into consideration)
         * immediate stop - will sell at the available highest price of the bid
-    2.
+    2. 
         * fix price
         * percent (from buying)
-    3.
+    3. 
         * take profit
         * sell-stop
         * trailing-stop
