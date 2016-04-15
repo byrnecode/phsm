@@ -142,7 +142,7 @@ var PHSM = (function () {
         var commission = charges.commission,
             commissionMinimum = charges.commissionMinimum,
             // get (commission)% of gross amount
-            computedCommission = this.whatIsPercentOf(commission, grossAmount);
+            computedCommission = PHSM.whatIsPercentOf(commission, grossAmount);
 
         // check if computed commission is less than the minimum commission of broker
         if (computedCommission < commissionMinimum) {
@@ -161,7 +161,7 @@ var PHSM = (function () {
     var computeVat = function (commission) {
         var vat = charges.vat,
             // get (vat)% of commission
-            computedVat = this.whatIsPercentOf(vat, commission);
+            computedVat = PHSM.whatIsPercentOf(vat, commission);
         
         // roundof to 4 decimal and remove trailing zeros
         computedVat = +computedVat.toFixed(4);
@@ -176,7 +176,7 @@ var PHSM = (function () {
     var computePseTransFee = function (grossAmount) {
         var pseTransFee = charges.pseTransFee,
             // get (pse trans fee)% of gross amount
-            computedPseTransFee = this.whatIsPercentOf(pseTransFee, grossAmount);
+            computedPseTransFee = PHSM.whatIsPercentOf(pseTransFee, grossAmount);
         
         // roundof to 4 decimal and remove trailing zeros
         computedPseTransFee = +computedPseTransFee.toFixed(4);
@@ -191,7 +191,7 @@ var PHSM = (function () {
     var computeSccp = function (grossAmount) {
         var sccp = charges.sccp,
             // get (sccp fee)% of gross amount
-            computedSccp = this.whatIsPercentOf(sccp, grossAmount);
+            computedSccp = PHSM.whatIsPercentOf(sccp, grossAmount);
         
         // roundof to 4 decimal and remove trailing zeros
         computedSccp = +computedSccp.toFixed(4);
@@ -206,7 +206,7 @@ var PHSM = (function () {
     var computeSalesTax = function (grossAmount) {
         var salesTax = charges.salesTax,
             // get (sales tax)% of gross amount
-            computedSalesTax = this.whatIsPercentOf(salesTax, grossAmount);
+            computedSalesTax = PHSM.whatIsPercentOf(salesTax, grossAmount);
         
         // roundof to 4 decimal and remove trailing zeros
         computedSalesTax = +computedSalesTax.toFixed(4);
@@ -271,7 +271,7 @@ var PHSM = (function () {
         // ====================================================================
         getPercentDiff: function (from, to) {
             var diff = to - from,
-                percentDiff = this.isWhatPercentOf(diff, from);
+                percentDiff = PHSM.isWhatPercentOf(diff, from);
 
             // roundof to 4 decimal and remove trailing zeros
             percentDiff = +percentDiff.toFixed(4);
@@ -290,16 +290,16 @@ var PHSM = (function () {
                 minimumAmount = price * boardLotSize,
                 canBuy = Math.floor(money / minimumAmount), // number of buyable boardlot
                 maxVolume = canBuy * boardLotSize,
-                grossAmount = this.getGrossAmount(price, maxVolume),
-                totalCost = this.getTotalBuyingCost(grossAmount);
+                grossAmount = PHSM.getGrossAmount(price, maxVolume),
+                totalCost = PHSM.getTotalBuyingCost(grossAmount);
             
             // since total cost must not exceed the current money
             // we re-evaluate the values to include the charges
             if(totalCost > money) {
                 canBuy--; // we decrement the number of buyable boardlot
                 maxVolume = canBuy * boardLotSize;
-                grossAmount = this.getGrossAmount(price, maxVolume);
-                totalCost = this.getTotalBuyingCost(grossAmount);
+                grossAmount = PHSM.getGrossAmount(price, maxVolume);
+                totalCost = PHSM.getTotalBuyingCost(grossAmount);
             }
             
             return {
@@ -384,15 +384,15 @@ var PHSM = (function () {
                 // if only one argument was passed, we'll use it as gross amount
                 if (arguments.length === 1) {
                     var grossAmount = arguments[0], // set the first argument as gross amount
-                        buyingFees = this.getBuyingFees(grossAmount),
+                        buyingFees = PHSM.getBuyingFees(grossAmount),
                         totalBuyingCost = grossAmount + buyingFees.totalFees;
                 }
                 // if two arguments was passed, we'll use it as stock price and volume
                 else if (arguments.length === 2) {
                     var stockPrice = arguments[0], // set the first argument as stock price
                         volume = arguments[1], // set the second argument as volume
-                        grossAmount = this.getGrossAmount(stockPrice, volume),
-                        buyingFees = this.getBuyingFees(grossAmount),
+                        grossAmount = PHSM.getGrossAmount(stockPrice, volume),
+                        buyingFees = PHSM.getBuyingFees(grossAmount),
                         totalBuyingCost = grossAmount + buyingFees.totalFees;
                 }
             }
@@ -414,15 +414,15 @@ var PHSM = (function () {
                 // if only one argument was passed, we'll use it as gross amount
                 if (arguments.length === 1) {
                     var grossAmount = arguments[0], // set the first argument as gross amount
-                        sellingFees = this.getSellingFees(grossAmount),
+                        sellingFees = PHSM.getSellingFees(grossAmount),
                         totalSellingCost = grossAmount - sellingFees.totalFees;
                 }
                 // if two arguments was passed, we'll use it as stock price and volume
                 else if (arguments.length === 2) {
                     var stockPrice = arguments[0], // set the first argument as stock price
                         volume = arguments[1], // set the second argument as volume
-                        grossAmount = this.getGrossAmount(stockPrice, volume),
-                        sellingFees = this.getSellingFees(grossAmount),
+                        grossAmount = PHSM.getGrossAmount(stockPrice, volume),
+                        sellingFees = PHSM.getSellingFees(grossAmount),
                         totalSellingCost = grossAmount - sellingFees.totalFees;
                 }
             }
@@ -454,7 +454,7 @@ var PHSM = (function () {
                     stockPrice = transactions[i].stockPrice, // set individual stock price
                     volume = transactions[i].volume; // set individual volume
                     // compute for the total cost, and add them to get the total
-                    totalCost += this.getTotalBuyingCost(stockPrice, volume);
+                    totalCost += PHSM.getTotalBuyingCost(stockPrice, volume);
                     // we get the individual volume, and add them to get the total
                     totalVolume += volume;
                 }
@@ -467,7 +467,7 @@ var PHSM = (function () {
             else if (arguments[0].constructor === Number) {
                 var stockPrice = arguments[0], // set the first argument as stock price
                     volume = arguments[1], // set the second argument as volume
-                    totalCost = this.getTotalBuyingCost(stockPrice, volume),
+                    totalCost = PHSM.getTotalBuyingCost(stockPrice, volume),
                     totalVolume = volume;
                 // compute for average
                 average = computeAverage(totalCost, totalVolume);
@@ -482,23 +482,23 @@ var PHSM = (function () {
         // ====================================================================
         getProfit: function (sellingPrice, myAveragePrice, volume) {
             // compute
-            var profitPercent = this.getPercentDiff(myAveragePrice, sellingPrice);
+            var profitPercent = PHSM.getPercentDiff(myAveragePrice, sellingPrice);
 
             //            profitPercent = +profitPercent.toFixed(4);
-            var profit = this.whatIsPercentOf(profitPercent, myAveragePrice) * volume;
+            var profit = PHSM.whatIsPercentOf(profitPercent, myAveragePrice) * volume;
             console.log("profit percent without charges: " + profitPercent);
             
-            var grossAmount = this.getGrossAmount(sellingPrice, volume);
+            var grossAmount = PHSM.getGrossAmount(sellingPrice, volume);
             console.log("gross amount: " + grossAmount);
             
-            var sellingFees = this.getSellingFees(grossAmount),
+            var sellingFees = PHSM.getSellingFees(grossAmount),
                 totalSellingFees = sellingFees.totalFees;
             console.log("total selling fees: " + totalSellingFees);
             
-            var totalSellingCost = this.getTotalSellingCost(grossAmount);
+            var totalSellingCost = PHSM.getTotalSellingCost(grossAmount);
             console.log("total selling cost: " + totalSellingCost);
             
-            var profitPercentBreakEven = this.isWhatPercentOf(totalSellingFees, grossAmount);
+            var profitPercentBreakEven = PHSM.isWhatPercentOf(totalSellingFees, grossAmount);
             console.log("profit percent breakeven: " + profitPercentBreakEven);
             profitPercent = profitPercent - profitPercentBreakEven;
 
