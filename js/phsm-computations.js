@@ -402,20 +402,20 @@ var PHSM = (function () {
         },
 
         // ====================================================================
-        // public method to compute Total Selling Cost (inclusive of charges)
+        // public method to compute Total Selling Net (inclusive of charges)
         // params: int/float - if only one argument was passed,
         //     it will be treated as gross amount, if two arguments was passed,
         //     it will be treated as stock price and volume
         // return: int/float - computed total selling cost
         // ====================================================================
-        getTotalSellingCost: function () {
+        getTotalSellingNet: function () {
             // check if passed arguments is a number
             if (arguments[0].constructor === Number) {
                 // if only one argument was passed, we'll use it as gross amount
                 if (arguments.length === 1) {
                     var grossAmount = arguments[0], // set the first argument as gross amount
                         sellingFees = PHSM.getSellingFees(grossAmount),
-                        totalSellingCost = grossAmount - sellingFees.totalFees;
+                        totalSellingNet = grossAmount - sellingFees.totalFees;
                 }
                 // if two arguments was passed, we'll use it as stock price and volume
                 else if (arguments.length === 2) {
@@ -423,12 +423,12 @@ var PHSM = (function () {
                         volume = arguments[1], // set the second argument as volume
                         grossAmount = PHSM.getGrossAmount(stockPrice, volume),
                         sellingFees = PHSM.getSellingFees(grossAmount),
-                        totalSellingCost = grossAmount - sellingFees.totalFees;
+                        totalSellingNet = grossAmount - sellingFees.totalFees;
                 }
             }
             // roundof to 4 decimal and remove trailing zeros
-            totalSellingCost = +totalSellingCost.toFixed(4);
-            return totalSellingCost;
+            totalSellingNet = +totalSellingNet.toFixed(4);
+            return totalSellingNet;
         },
 
         // ====================================================================
@@ -474,6 +474,44 @@ var PHSM = (function () {
             }
             return average;
         },
+        
+        // ====================================================================
+        // public method to compute Position Size
+        // params: int/float - capital, risk percent, stop loss percent
+        //         risk percent is relative to capital,
+        //         stop loss percent is dependent to trade setup
+        // return: int/float - position size in amount
+        // view here for more info on position sizing: http://www.chrisperruna.com/2007/09/18/reinforce-position-sizing/
+        // ====================================================================
+        getPositionSize: function (capital, riskPercent, stopLossPercent) {
+            var riskAmount, 
+                positionSize,
+                stopLossAmount;
+            
+            riskAmount = PHSM.whatIsPercentOf(riskPercent, capital);
+            positionSize = (riskAmount / stopLossPercent) * 100;
+            stopLossAmount = PHSM.whatIsPercentOf(stopLossPercent, positionSize);
+            return {
+                riskAmount,
+                positionSize
+            };
+        },
+        
+        // ====================================================================
+        // public method to compute Expectancy Rate per Trade
+        // params: int/float - winning rate, average win, lossing rate, average loss
+        //         winning rate and lossing rate are percentage
+        //         while average win and average loss can be percentage or actual amount
+        // return: int/float - expectancy per trade
+        // view here for more info on expectancy: http://www.chrisperruna.com/2007/06/26/position-sizing-and-expectancy/
+        // ====================================================================
+        getExpectancyRate: function (winRate, aveWin, lossRate, aveLoss) {
+            var expectancy;
+            
+            expectancy = (winRate * aveWin) - (lossRate * aveLoss);
+            // expectancy = expectancy / 100;
+            return expectancy;
+        },
 
         // ====================================================================
         // public method to compute Profit (gain/loss)
@@ -495,21 +533,75 @@ var PHSM = (function () {
                 totalSellingFees = sellingFees.totalFees;
             console.log("total selling fees: " + totalSellingFees);
             
-            var totalSellingCost = PHSM.getTotalSellingCost(grossAmount);
-            console.log("total selling cost: " + totalSellingCost);
+            var totalSellingNet = PHSM.getTotalSellingNet(grossAmount);
+            console.log("total selling net: " + totalSellingNet);
             
             var profitPercentBreakEven = PHSM.isWhatPercentOf(totalSellingFees, grossAmount);
             console.log("profit percent breakeven: " + profitPercentBreakEven);
             profitPercent = profitPercent - profitPercentBreakEven;
 
             profit = profit - totalSellingFees;
+            // var finalProfitPercent = PHSM.isWhatPercentOf(profit, grossAmount);
             
-            // roundof to 4 decimal and remove trailing zeros
+            // roundof to 2 decimal and remove trailing zeros
             profit = +profit.toFixed(2);
             profitPercent = +profitPercent.toFixed(2);
+            // finalProfitPercent = +finalProfitPercent.toFixed(2);
             return {
                 profit: profit,
                 profitPercent: profitPercent
+                // finalProfitPercent: finalProfitPercent
+            };
+        },
+        
+        // ====================================================================
+        // public method to compute Profit (gain/loss)
+        // params: int/float - stock last price, "my" average price, volume
+        // return: object - actual profit, percent profit
+        // ====================================================================
+        getProfitB: function (sellingPrice, myAveragePrice, volume) {
+            // compute 
+            var origGrossAmount = PHSM.getGrossAmount(myAveragePrice, volume);
+            console.log("original gross amount: " + origGrossAmount);
+            
+            var grossAmount = PHSM.getGrossAmount(sellingPrice, volume);
+            console.log("gross amount: " + grossAmount);
+            
+            var sellingFees = PHSM.getSellingFees(grossAmount),
+                totalSellingFees = sellingFees.totalFees;
+            console.log("total selling fees: " + totalSellingFees);
+            
+            var totalSellingNet = PHSM.getTotalSellingNet(grossAmount);
+            console.log("total selling net: " + totalSellingNet);
+
+            var profitPercent = PHSM.getPercentDiff(origGrossAmount, totalSellingNet);
+            var profit = PHSM.whatIsPercentOf(profitPercent, origGrossAmount);
+            
+            // roundof to 2 decimal and remove trailing zeros
+            profit = +profit.toFixed(2);
+            profitPercent = +profitPercent.toFixed(2);
+            
+            return {
+                profit: profit,
+                profitPercent: profitPercent
+            };
+        },
+        
+        // ====================================================================
+        // public method to compute break-even price from original purchase
+        // params: int/float - 
+        // return: 
+        // ====================================================================
+        getBreakEvenPrice: function () {
+            
+        },
+
+        trailingStop: function (stop, targetToTrail) {
+            var percentVal = PHSM.whatIsPercentOf(stop, targetToTrail),
+                sellAt = targetToTrail - percentVal;
+            sellAt = +sellAt.toFixed(4);
+            PHSM.executeSell = function() {
+                console.log('selling now at: ' + sellAt);
             };
         }
 
