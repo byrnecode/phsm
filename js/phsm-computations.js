@@ -490,7 +490,8 @@ var PHSM = (function () {
             
             riskAmount = PHSM.whatIsPercentOf(riskPercent, capital);
             positionSize = (riskAmount / stopLossPercent) * 100;
-            stopLossAmount = PHSM.whatIsPercentOf(stopLossPercent, positionSize);
+            positionSize = +positionSize.toFixed(2);
+            // stopLossAmount = PHSM.whatIsPercentOf(stopLossPercent, positionSize);
             return {
                 riskAmount,
                 positionSize
