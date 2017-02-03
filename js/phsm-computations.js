@@ -597,14 +597,36 @@ var PHSM = (function () {
             
         },
 
+        // ====================================================================
+        // public method to compute trailing stop
+        // params: int/float - 
+        // return: 
+        // ====================================================================
         trailingStop: function (stop, targetToTrail) {
             var percentVal = PHSM.whatIsPercentOf(stop, targetToTrail),
                 sellAt = targetToTrail - percentVal;
             sellAt = +sellAt.toFixed(4);
+					console.log(sellAt);
             PHSM.executeSell = function() {
                 console.log('selling now at: ' + sellAt);
             };
-        }
+        },
+			
+				// ====================================================================
+        // public method to compute high/low of price
+        // params: int/float - 
+        // return: 
+        // ====================================================================
+				getHighLow: function (arr) {
+
+					var max = Math.max(...arr),
+						min = Math.min(...arr);
+
+					return {
+						max: max,
+						min: min
+					};
+				}
 
     };
 
