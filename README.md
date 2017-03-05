@@ -20,25 +20,25 @@
     getTotalBuyingCost(grossAmount)
     getTotalBuyingCost(price, volume)
     
-		getTotalSellingNet(grossAmount)
+    getTotalSellingNet(grossAmount)
     getTotalSellingNet(price, volume)
     
     getAverage(arrayTransactions)
     getAverage(price, volume)
-		
-		getPositionSize(capital, riskPercent, stopLossPercent)
-		
-		getExpectancyRate(winRate, aveWin, lossRate, aveLoss, aveRiskAmount)
+    
+    getPositionSize(capital, riskPercent, stopLossPercent)
+    
+    getExpectancyRate(winRate, aveWin, lossRate, aveLoss, aveRiskAmount)
     
     getProfit(sellingPrice, myAveragePrice, volume)
-		
-		getBreakEvenPrice()
-		
-		trailingStop(stop, targetToTrail)
-		
-		getHighLow(arr)
-		
-		getCompounding(amount, percent, cycle, additionPerCycle(optional))
+    
+    getBreakEvenPrice()
+    
+    trailingStop(stop, targetToTrail)
+    
+    getHighLow(arr)
+    
+    getCompounding(amount, percent, cycle, additionPerCycle(optional))
     
     
 ### TODO:
