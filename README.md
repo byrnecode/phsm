@@ -38,7 +38,7 @@
 		
 		getHighLow(arr)
 		
-		getCompounding(amount, percent, cycle, additionPerCycle - optional)
+		getCompounding(amount, percent, cycle, additionPerCycle(optional))
     
     
 ### TODO:
