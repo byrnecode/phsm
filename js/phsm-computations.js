@@ -148,7 +148,7 @@ var PHSM = (function () {
 		if (computedCommission < commissionMinimum) {
 			computedCommission = commissionMinimum;
 		}
-		// roundof to 4 decimal and remove trailing zeros
+		// round-off to 4 decimal and remove trailing zeros
 		computedCommission = +computedCommission.toFixed(4);
 		return computedCommission;
 	};
@@ -163,7 +163,7 @@ var PHSM = (function () {
 			// get (vat)% of commission
 			computedVat = PHSM.whatIsPercentOf(vat, commission);
 
-		// roundof to 4 decimal and remove trailing zeros
+		// round-off to 4 decimal and remove trailing zeros
 		computedVat = +computedVat.toFixed(4);
 		return computedVat;
 	};
@@ -178,7 +178,7 @@ var PHSM = (function () {
 			// get (pse trans fee)% of gross amount
 			computedPseTransFee = PHSM.whatIsPercentOf(pseTransFee, grossAmount);
 
-		// roundof to 4 decimal and remove trailing zeros
+		// round-off to 4 decimal and remove trailing zeros
 		computedPseTransFee = +computedPseTransFee.toFixed(4);
 		return computedPseTransFee;
 	};
@@ -193,7 +193,7 @@ var PHSM = (function () {
 			// get (sccp fee)% of gross amount
 			computedSccp = PHSM.whatIsPercentOf(sccp, grossAmount);
 
-		// roundof to 4 decimal and remove trailing zeros
+		// round-off to 4 decimal and remove trailing zeros
 		computedSccp = +computedSccp.toFixed(4);
 		return computedSccp;
 	};
@@ -208,7 +208,7 @@ var PHSM = (function () {
 			// get (sales tax)% of gross amount
 			computedSalesTax = PHSM.whatIsPercentOf(salesTax, grossAmount);
 
-		// roundof to 4 decimal and remove trailing zeros
+		// round-off to 4 decimal and remove trailing zeros
 		computedSalesTax = +computedSalesTax.toFixed(4);
 		return computedSalesTax;
 	};
@@ -222,7 +222,7 @@ var PHSM = (function () {
 		// compute for average
 		var average = totalCost / totalVolume;
 
-		// roundof to 4 decimal and remove trailing zeros
+		// round-off to 4 decimal and remove trailing zeros
 		average = +average.toFixed(4);
 		return average;
 	};
@@ -242,7 +242,7 @@ var PHSM = (function () {
 		whatIsPercentOf: function (percent, target) {
 			var result = (percent / 100) * target;
 
-			// roundof to 4 decimal and remove trailing zeros
+			// round-off to 4 decimal and remove trailing zeros
 			result = +result.toFixed(4);
 			return result;
 		},
@@ -257,7 +257,7 @@ var PHSM = (function () {
 		isWhatPercentOf: function (value, target) {
 			var result = (value / target) * 100;
 
-			// roundof to 4 decimal and remove trailing zeros
+			// round-off to 4 decimal and remove trailing zeros
 			result = +result.toFixed(4);
 			return result;
 		},
@@ -273,7 +273,7 @@ var PHSM = (function () {
 			var diff = to - from,
 				percentDiff = PHSM.isWhatPercentOf(diff, from);
 
-			// roundof to 4 decimal and remove trailing zeros
+			// round-off to 4 decimal and remove trailing zeros
 			percentDiff = +percentDiff.toFixed(4);
 			return percentDiff;
 		},
@@ -318,7 +318,7 @@ var PHSM = (function () {
 			// get gross amount by multiplying stock price * volume
 			var grossAmount = stockPrice * volume;
 
-			// roundof to 4 decimal and remove trailing zeros
+			// round-off to 4 decimal and remove trailing zeros
 			grossAmount = +grossAmount.toFixed(4);
 			return grossAmount;
 		},
@@ -335,7 +335,7 @@ var PHSM = (function () {
 				sccp = computeSccp(grossAmount),
 				totalFees = commission + vat + pseTransFee + sccp;
 
-			// roundof to 4 decimal and remove trailing zeros
+			// round-off to 4 decimal and remove trailing zeros
 			totalFees = +totalFees.toFixed(4);
 			return {
 				commission: commission,
@@ -359,7 +359,7 @@ var PHSM = (function () {
 				salesTax = computeSalesTax(grossAmount),
 				totalFees = commission + vat + pseTransFee + sccp + salesTax;
 
-			// roundof to 4 decimal and remove trailing zeros
+			// round-off to 4 decimal and remove trailing zeros
 			totalFees = +totalFees.toFixed(4);
 			return {
 				commission: commission,
@@ -396,7 +396,7 @@ var PHSM = (function () {
 					totalBuyingCost = grossAmount + buyingFees.totalFees;
 			}
 			//}
-			// roundof to 4 decimal and remove trailing zeros
+			// round-off to 4 decimal and remove trailing zeros
 			totalBuyingCost = +totalBuyingCost.toFixed(4);
 			return totalBuyingCost;
 		},
@@ -426,7 +426,7 @@ var PHSM = (function () {
 					totalSellingNet = grossAmount - sellingFees.totalFees;
 			}
 			//}
-			// roundof to 4 decimal and remove trailing zeros
+			// round-off to 4 decimal and remove trailing zeros
 			totalSellingNet = +totalSellingNet.toFixed(4);
 			return totalSellingNet;
 		},
@@ -535,7 +535,7 @@ var PHSM = (function () {
 			// calculate actual profit percent
 			var profitPercent = PHSM.isWhatPercentOf(profit, totalCost);
 
-			// roundof to 2 decimal and remove trailing zeros
+			// round-off to 2 decimal and remove trailing zeros
 			profit = +profit.toFixed(2);
 			profitPercent = +profitPercent.toFixed(2);
 
@@ -641,6 +641,34 @@ var PHSM = (function () {
 				amountIncrease: amountIncrease,
 				percentIncrease: percentIncrease,
 				totalInvestment: totalInvestment
+			};
+		},
+
+		// ====================================================================
+		// public method to get Turtle System setup
+		// params: int/float - highest high of Donchian Channel (20), ATR of last candle
+		// return: object - entry, stopLoss, initialTarget
+		// ====================================================================
+		getTurtleSetup: function(high, atr) {
+			// get the single tick size relative from the previous 20day high
+			var boardLot = getBoardLot(high),
+					tick = boardLot.tick;
+			// compute entry by adding tick size to the previous 20day high
+			var entry = high + tick;
+			// compute stop loss
+			var stopLoss = entry - (2 * atr);
+			// compute target price (at least RRR of 1:3)
+			var initialTarget = entry + (3 * (2 * atr));
+
+			// round-off to 4 decimal and remove trailing zeros
+			entry = +entry.toFixed(4);
+			stopLoss = +stopLoss.toFixed(4);
+			initialTarget = +initialTarget.toFixed(4);
+
+			return {
+				entry: entry,
+				stopLoss: stopLoss,
+				initialTarget: initialTarget
 			};
 		}
 
