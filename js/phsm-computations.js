@@ -484,14 +484,12 @@ var PHSM = (function () {
 		// view here for more info on position sizing: http://www.chrisperruna.com/2007/09/18/reinforce-position-sizing/
 		// ====================================================================
 		getPositionSize: function (capital, riskPercent, stopLossPercent) {
-			var riskAmount,
-				positionSize,
-				stopLossAmount;
+			var riskAmount, positionSize;
 
 			riskAmount = PHSM.whatIsPercentOf(riskPercent, capital);
 			positionSize = (riskAmount / stopLossPercent) * 100;
 			positionSize = +positionSize.toFixed(4);
-			// stopLossAmount = PHSM.whatIsPercentOf(stopLossPercent, positionSize);
+			
 			return {
 				riskAmount,
 				positionSize
@@ -556,51 +554,9 @@ var PHSM = (function () {
 		},
 
 		// ====================================================================
-		// public method to compute trailing stop
-		// params: int/float - 
-		// return: 
-		// ====================================================================
-		trailingStop: function (stop, targetToTrail) {
-			var percentVal = PHSM.whatIsPercentOf(stop, targetToTrail),
-				sellAt = targetToTrail - percentVal;
-			sellAt = +sellAt.toFixed(4);
-			console.log(sellAt);
-			PHSM.executeSell = function () {
-				console.log('selling now at: ' + sellAt);
-			};
-		},
-		
-		// ====================================================================
-		// public method to compute trailing stop
-		// params: int/float - 
-		// return: 
-		// ====================================================================
-		ts: function (stock, stopPercent) {
-			
-			// step 1: settimeout so that every minute will request new data
-		
-			// step 2: ajax
-				// i need the stock to get the data
-				// ajax here..
-				// GET 'http://api.manilainvestor.com/v1/stocks/ticker/' + stock
-					// return = arr of object
-					// if done
-						// step 3: get high - low of data
-						// .each object
-						// arr.push(object.Price)
-						var data = PHSM.getHighLow(arr);
-						var high = data.high;
-						// if high < old high
-							// set high = old high
-			
-						// step 4: get trailing stop
-						var sellAt = PHSM.trailingStop(stopPercent, high)
-		},
-
-		// ====================================================================
 		// public method to compute high/low of price
-		// params: int/float - 
-		// return: 
+		// params: Array
+		// return: int/float - max and min
 		// ====================================================================
 		getHighLow: function (arr) {
 
@@ -641,34 +597,6 @@ var PHSM = (function () {
 				amountIncrease: amountIncrease,
 				percentIncrease: percentIncrease,
 				totalInvestment: totalInvestment
-			};
-		},
-
-		// ====================================================================
-		// public method to get Turtle System setup
-		// params: int/float - highest high of Donchian Channel (20), ATR of last candle
-		// return: object - entry, stopLoss, initialTarget
-		// ====================================================================
-		getTurtleSetup: function(high, atr) {
-			// get the single tick size relative from the previous 20day high
-			var boardLot = getBoardLot(high),
-					tick = boardLot.tick;
-			// compute entry by adding tick size to the previous 20day high
-			var entry = high + tick;
-			// compute stop loss
-			var stopLoss = entry - (2 * atr);
-			// compute target price (at least RRR of 1:3)
-			var initialTarget = entry + (3 * (2 * atr));
-
-			// round-off to 4 decimal and remove trailing zeros
-			entry = +entry.toFixed(4);
-			stopLoss = +stopLoss.toFixed(4);
-			initialTarget = +initialTarget.toFixed(4);
-
-			return {
-				entry: entry,
-				stopLoss: stopLoss,
-				initialTarget: initialTarget
 			};
 		}
 
