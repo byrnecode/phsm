@@ -1,9 +1,9 @@
-var PHSM = (function () {
+let PHSM = (function () {
 
 	// ************************************************************************
 	// PRIVATE VARIABLES
 	// ************************************************************************
-	var charges = {
+	const charges = {
 		commission: 0.25, // % of gross amount
 		commissionMinimum: 20, // pesos minimum commission of broker
 		vat: 12, // % of commission
@@ -13,7 +13,7 @@ var PHSM = (function () {
 	};
 
 	// Board Lot Table (minimum allowed shares at certain price range)
-	var boardLotTable = [
+	const boardLotTable = [
 		{
 			from: 0.0001,
 			to: 0.0099,
@@ -111,13 +111,13 @@ var PHSM = (function () {
 	// params: int/float - price
 	// return: object - tick size (fluctuation), board lot size (minimum shares)
 	// ========================================================================
-	var getBoardLot = function (price) {
-		for (var i = 0; i < boardLotTable.length; i++) {
-			var from = boardLotTable[i].from, // price range (from)
+	const getBoardLot = function (price) {
+		for (let i = 0; i < boardLotTable.length; i++) {
+			const from = boardLotTable[i].from, // price range (from)
 				to = boardLotTable[i].to, // price range (to)
 				tick = boardLotTable[i].tick, // tick size (fluctuation)
-				size = boardLotTable[i].size, // lot size (minimum shares)
-				result;
+				size = boardLotTable[i].size; // lot size (minimum shares)
+			let result;
 
 			// check for price range
 			if (price >= from && price <= to) {
@@ -138,11 +138,11 @@ var PHSM = (function () {
 	// params: int/float - gross amount
 	// return: int/float - computed commission
 	// ========================================================================
-	var computeCommission = function (grossAmount) {
-		var commission = charges.commission,
-			commissionMinimum = charges.commissionMinimum,
-			// get (commission)% of gross amount
-			computedCommission = PHSM.whatIsPercentOf(commission, grossAmount);
+	const computeCommission = function (grossAmount) {
+		const commission = charges.commission,
+			commissionMinimum = charges.commissionMinimum;
+		// get (commission)% of gross amount
+		let computedCommission = PHSM.whatIsPercentOf(commission, grossAmount);
 
 		// check if computed commission is less than the minimum commission of broker
 		if (computedCommission < commissionMinimum) {
@@ -158,10 +158,10 @@ var PHSM = (function () {
 	// params: int/float - commission
 	// return: int/float - computed vat
 	// ========================================================================
-	var computeVat = function (commission) {
-		var vat = charges.vat,
-			// get (vat)% of commission
-			computedVat = PHSM.whatIsPercentOf(vat, commission);
+	const computeVat = function (commission) {
+		const vat = charges.vat;
+		// get (vat)% of commission
+		let computedVat = PHSM.whatIsPercentOf(vat, commission);
 
 		// round-off to 4 decimal and remove trailing zeros
 		computedVat = +computedVat.toFixed(4);
@@ -173,10 +173,10 @@ var PHSM = (function () {
 	// params: int/float - gross amount
 	// return: int/float - computed pse trans fee
 	// ========================================================================
-	var computePseTransFee = function (grossAmount) {
-		var pseTransFee = charges.pseTransFee,
-			// get (pse trans fee)% of gross amount
-			computedPseTransFee = PHSM.whatIsPercentOf(pseTransFee, grossAmount);
+	const computePseTransFee = function (grossAmount) {
+		const pseTransFee = charges.pseTransFee;
+		// get (pse trans fee)% of gross amount
+		let computedPseTransFee = PHSM.whatIsPercentOf(pseTransFee, grossAmount);
 
 		// round-off to 4 decimal and remove trailing zeros
 		computedPseTransFee = +computedPseTransFee.toFixed(4);
@@ -188,10 +188,10 @@ var PHSM = (function () {
 	// params: int/float - gross amount
 	// return: int/float - computed sccp fee
 	// ========================================================================
-	var computeSccp = function (grossAmount) {
-		var sccp = charges.sccp,
-			// get (sccp fee)% of gross amount
-			computedSccp = PHSM.whatIsPercentOf(sccp, grossAmount);
+	const computeSccp = function (grossAmount) {
+		const sccp = charges.sccp;
+		// get (sccp fee)% of gross amount
+		let computedSccp = PHSM.whatIsPercentOf(sccp, grossAmount);
 
 		// round-off to 4 decimal and remove trailing zeros
 		computedSccp = +computedSccp.toFixed(4);
@@ -203,10 +203,10 @@ var PHSM = (function () {
 	// params: int/float - gross amount
 	// return: int/float - computed sales tax
 	// ========================================================================
-	var computeSalesTax = function (grossAmount) {
-		var salesTax = charges.salesTax,
-			// get (sales tax)% of gross amount
-			computedSalesTax = PHSM.whatIsPercentOf(salesTax, grossAmount);
+	const computeSalesTax = function (grossAmount) {
+		const salesTax = charges.salesTax;
+		// get (sales tax)% of gross amount
+		let computedSalesTax = PHSM.whatIsPercentOf(salesTax, grossAmount);
 
 		// round-off to 4 decimal and remove trailing zeros
 		computedSalesTax = +computedSalesTax.toFixed(4);
@@ -218,9 +218,9 @@ var PHSM = (function () {
 	// params: int/float - total cost, total volume
 	// return: int/float - computed overall average
 	// ========================================================================
-	var computeAverage = function (totalCost, totalVolume) {
+	const computeAverage = function (totalCost, totalVolume) {
 		// compute for average
-		var average = totalCost / totalVolume;
+		let average = totalCost / totalVolume;
 
 		// round-off to 4 decimal and remove trailing zeros
 		average = +average.toFixed(4);
@@ -240,7 +240,7 @@ var PHSM = (function () {
 		// where 10% = percent, 100 = target, return = 10
 		// ====================================================================
 		whatIsPercentOf: function (percent, target) {
-			var result = (percent / 100) * target;
+			let result = (percent / 100) * target;
 
 			// round-off to 4 decimal and remove trailing zeros
 			result = +result.toFixed(4);
@@ -255,7 +255,7 @@ var PHSM = (function () {
 		// where 10 = value, 100 = target, return = 10%
 		// ====================================================================
 		isWhatPercentOf: function (value, target) {
-			var result = (value / target) * 100;
+			let result = (value / target) * 100;
 
 			// round-off to 4 decimal and remove trailing zeros
 			result = +result.toFixed(4);
@@ -270,8 +270,8 @@ var PHSM = (function () {
 		// where 50 = from, 100 = to, return = 100%
 		// ====================================================================
 		getPercentDiff: function (from, to) {
-			var diff = to - from,
-				percentDiff = PHSM.isWhatPercentOf(diff, from);
+			const diff = to - from;
+			let percentDiff = PHSM.isWhatPercentOf(diff, from);
 
 			// round-off to 4 decimal and remove trailing zeros
 			percentDiff = +percentDiff.toFixed(4);
@@ -285,10 +285,10 @@ var PHSM = (function () {
 		// ====================================================================
 		getBuyPreview: function (price, money) {
 			// we initialize every computation to assume the total cost
-			var boardLot = getBoardLot(price),
+			const boardLot = getBoardLot(price),
 				boardLotSize = boardLot.size,
-				minimumAmount = price * boardLotSize,
-				canBuy = Math.floor(money / minimumAmount), // number of buyable boardlot
+				minimumAmount = price * boardLotSize;
+			let canBuy = Math.floor(money / minimumAmount), // number of buyable boardlot
 				maxVolume = canBuy * boardLotSize,
 				grossAmount = PHSM.getGrossAmount(price, maxVolume),
 				totalCost = PHSM.getTotalBuyingCost(grossAmount);
@@ -316,7 +316,7 @@ var PHSM = (function () {
 		// ====================================================================
 		getGrossAmount: function (stockPrice, volume) {
 			// get gross amount by multiplying stock price * volume
-			var grossAmount = stockPrice * volume;
+			let grossAmount = stockPrice * volume;
 
 			// round-off to 4 decimal and remove trailing zeros
 			grossAmount = +grossAmount.toFixed(4);
@@ -329,11 +329,11 @@ var PHSM = (function () {
 		// return: object - commission, vat, pseTransFee, sccp, totalFees
 		// ====================================================================
 		getBuyingFees: function (grossAmount) {
-			var commission = computeCommission(grossAmount),
+			const commission = computeCommission(grossAmount),
 				vat = computeVat(commission),
 				pseTransFee = computePseTransFee(grossAmount),
-				sccp = computeSccp(grossAmount),
-				totalFees = commission + vat + pseTransFee + sccp;
+				sccp = computeSccp(grossAmount);
+			let totalFees = commission + vat + pseTransFee + sccp;
 
 			// round-off to 4 decimal and remove trailing zeros
 			totalFees = +totalFees.toFixed(4);
@@ -352,12 +352,12 @@ var PHSM = (function () {
 		// return: object - commission, vat, pseTransFee, sccp, salesTax, totalFees
 		// ====================================================================
 		getSellingFees: function (grossAmount) {
-			var commission = computeCommission(grossAmount),
+			const commission = computeCommission(grossAmount),
 				vat = computeVat(commission),
 				pseTransFee = computePseTransFee(grossAmount),
 				sccp = computeSccp(grossAmount),
-				salesTax = computeSalesTax(grossAmount),
-				totalFees = commission + vat + pseTransFee + sccp + salesTax;
+				salesTax = computeSalesTax(grossAmount);
+			let totalFees = commission + vat + pseTransFee + sccp + salesTax;
 
 			// round-off to 4 decimal and remove trailing zeros
 			totalFees = +totalFees.toFixed(4);
@@ -383,13 +383,13 @@ var PHSM = (function () {
 			//if (arguments[0].constructor === Number) {
 			// if only one argument was passed, we'll use it as gross amount
 			if (arguments.length === 1) {
-				var grossAmount = arguments[0], // set the first argument as gross amount
+				const grossAmount = arguments[0], // set the first argument as gross amount
 					buyingFees = PHSM.getBuyingFees(grossAmount),
 					totalBuyingCost = grossAmount + buyingFees.totalFees;
 			}
 			// if two arguments was passed, we'll use it as stock price and volume
 			else if (arguments.length === 2) {
-				var stockPrice = arguments[0], // set the first argument as stock price
+				const stockPrice = arguments[0], // set the first argument as stock price
 					volume = arguments[1], // set the second argument as volume
 					grossAmount = PHSM.getGrossAmount(stockPrice, volume),
 					buyingFees = PHSM.getBuyingFees(grossAmount),
@@ -413,13 +413,13 @@ var PHSM = (function () {
 			//if (arguments[0].constructor === Number) {
 			// if only one argument was passed, we'll use it as gross amount
 			if (arguments.length === 1) {
-				var grossAmount = arguments[0], // set the first argument as gross amount
+				const grossAmount = arguments[0], // set the first argument as gross amount
 					sellingFees = PHSM.getSellingFees(grossAmount),
 					totalSellingNet = grossAmount - sellingFees.totalFees;
 			}
 			// if two arguments was passed, we'll use it as stock price and volume
 			else if (arguments.length === 2) {
-				var stockPrice = arguments[0], // set the first argument as stock price
+				const stockPrice = arguments[0], // set the first argument as stock price
 					volume = arguments[1], // set the second argument as volume
 					grossAmount = PHSM.getGrossAmount(stockPrice, volume),
 					sellingFees = PHSM.getSellingFees(grossAmount),
@@ -440,17 +440,17 @@ var PHSM = (function () {
 		// return: int/float - computed average
 		// ====================================================================
 		getAverage: function () {
-			var average;
+			let average;
 			// check if the passed argument is an Array,
 			// an Array means multiple transactions
 			if (arguments[0].constructor === Array) {
-				var transactions = arguments[0], // the arguments[0] is the actual array, and we set it to a variable
+				let transactions = arguments[0], // the arguments[0] is the actual array, and we set it to a variable
 					stockPrice,
 					volume,
 					totalCost = null,
 					totalVolume = null;
 				// loop through the array to get individual transactions
-				for (var i = 0; i < transactions.length; i++) {
+				for (let i = 0; i < transactions.length; i++) {
 					stockPrice = transactions[i].stockPrice, // set individual stock price
 						volume = transactions[i].volume; // set individual volume
 					// compute for the total cost, and add them to get the total
@@ -465,7 +465,7 @@ var PHSM = (function () {
 			// if the argument is not an Array,
 			// it means it's just a single transaction
 			else /*if (arguments[0].constructor === Number)*/ {
-				var stockPrice = arguments[0], // set the first argument as stock price
+				const stockPrice = arguments[0], // set the first argument as stock price
 					volume = arguments[1], // set the second argument as volume
 					totalCost = PHSM.getTotalBuyingCost(stockPrice, volume),
 					totalVolume = volume;
@@ -484,7 +484,7 @@ var PHSM = (function () {
 		// view here for more info on position sizing: http://www.chrisperruna.com/2007/09/18/reinforce-position-sizing/
 		// ====================================================================
 		getPositionSize: function (capital, riskPercent, stopLossPercent) {
-			var riskAmount, positionSize;
+			let riskAmount, positionSize;
 
 			riskAmount = PHSM.whatIsPercentOf(riskPercent, capital);
 			positionSize = (riskAmount / stopLossPercent) * 100;
@@ -506,7 +506,7 @@ var PHSM = (function () {
 		// view here for more info on expectancy: http://www.chrisperruna.com/2007/06/26/position-sizing-and-expectancy/
 		// ====================================================================
 		getExpectancyRate: function (winRate, aveWin, lossRate, aveLoss, aveRiskAmount) {
-			var expectancy;
+			let expectancy;
 
 			// expectancy = (winRate * aveWin) - (lossRate * aveLoss);
 			expectancy = ((winRate * aveWin) - (lossRate * aveLoss) / aveRiskAmount);
@@ -522,16 +522,16 @@ var PHSM = (function () {
 		getProfit: function (sellingPrice, myAveragePrice, volume) {
 
 			// calculate total buying cost
-			var totalCost = myAveragePrice * volume,
-				totalCost = +totalCost.toFixed(4);
+			let totalCost = myAveragePrice * volume;
+			totalCost = +totalCost.toFixed(4);
 
 			// calculate total selling net
-			var totalNet = PHSM.getTotalSellingNet(sellingPrice, volume);
+			const totalNet = PHSM.getTotalSellingNet(sellingPrice, volume);
 
 			// calculate actual profit
-			var profit = totalNet - totalCost;
+			let profit = totalNet - totalCost;
 			// calculate actual profit percent
-			var profitPercent = PHSM.isWhatPercentOf(profit, totalCost);
+			let profitPercent = PHSM.isWhatPercentOf(profit, totalCost);
 
 			// round-off to 2 decimal and remove trailing zeros
 			profit = +profit.toFixed(2);
@@ -560,7 +560,7 @@ var PHSM = (function () {
 		// ====================================================================
 		getHighLow: function (arr) {
 
-			var max = Math.max(...arr),
+			const max = Math.max(...arr),
 				min = Math.min(...arr);
 
 			return {
@@ -575,12 +575,12 @@ var PHSM = (function () {
 		// return: int/float - compunded amount, cycle, amount increase, percent increase, total investment
 		// ====================================================================
 		getCompounding: function(amount, percent, cycle, additionPerCycle = 0) {
-			var totalInvestment = amount + (additionPerCycle * (cycle - 1)); // get total investment including additionPerCycle for every cycle
+			const totalInvestment = amount + (additionPerCycle * (cycle - 1)); // get total investment including additionPerCycle for every cycle
 
-			for (var i = 0; i < cycle; i++) {
-				var interest = PHSM.whatIsPercentOf(percent, amount);
+			for (let i = 0; i < cycle; i++) {
+				const interest = PHSM.whatIsPercentOf(percent, amount);
 				// check if last iteration
-				if(i === cycle - 1) {
+				if (i === cycle - 1) {
 					amount += interest;
 				}
 				else {
@@ -588,7 +588,7 @@ var PHSM = (function () {
 				}
 			}
 			
-			var percentIncrease = PHSM.getPercentDiff(totalInvestment, amount),
+			const percentIncrease = PHSM.getPercentDiff(totalInvestment, amount),
 				amountIncrease = amount - totalInvestment;
 			
 			return {
