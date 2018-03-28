@@ -112,12 +112,13 @@ let PHSM = (function () {
 	// return: object - tick size (fluctuation), board lot size (minimum shares)
 	// ========================================================================
 	const getBoardLot = function (price) {
+		let result;
+
 		for (let i = 0; i < boardLotTable.length; i++) {
 			const from = boardLotTable[i].from, // price range (from)
 				to = boardLotTable[i].to, // price range (to)
 				tick = boardLotTable[i].tick, // tick size (fluctuation)
 				size = boardLotTable[i].size; // lot size (minimum shares)
-			let result;
 
 			// check for price range
 			if (price >= from && price <= to) {
@@ -130,6 +131,7 @@ let PHSM = (function () {
 				result = "Price is out-of-range by fluctuation or tick size!";
 			}
 		}
+
 		return result;
 	};
 
@@ -379,21 +381,22 @@ let PHSM = (function () {
 		// return: int/float - computed total buying cost
 		// ====================================================================
 		getTotalBuyingCost: function () {
+			let totalBuyingCost;
 			// check if passed arguments is a number
 			//if (arguments[0].constructor === Number) {
 			// if only one argument was passed, we'll use it as gross amount
 			if (arguments.length === 1) {
 				const grossAmount = arguments[0], // set the first argument as gross amount
-					buyingFees = PHSM.getBuyingFees(grossAmount),
-					totalBuyingCost = grossAmount + buyingFees.totalFees;
+					buyingFees = PHSM.getBuyingFees(grossAmount);
+				totalBuyingCost = grossAmount + buyingFees.totalFees;
 			}
 			// if two arguments was passed, we'll use it as stock price and volume
 			else if (arguments.length === 2) {
 				const stockPrice = arguments[0], // set the first argument as stock price
 					volume = arguments[1], // set the second argument as volume
 					grossAmount = PHSM.getGrossAmount(stockPrice, volume),
-					buyingFees = PHSM.getBuyingFees(grossAmount),
-					totalBuyingCost = grossAmount + buyingFees.totalFees;
+					buyingFees = PHSM.getBuyingFees(grossAmount);
+				totalBuyingCost = grossAmount + buyingFees.totalFees;
 			}
 			//}
 			// round-off to 4 decimal and remove trailing zeros
@@ -409,21 +412,22 @@ let PHSM = (function () {
 		// return: int/float - computed total selling cost
 		// ====================================================================
 		getTotalSellingNet: function () {
+			let totalSellingNet;
 			// check if passed arguments is a number
 			//if (arguments[0].constructor === Number) {
 			// if only one argument was passed, we'll use it as gross amount
 			if (arguments.length === 1) {
 				const grossAmount = arguments[0], // set the first argument as gross amount
-					sellingFees = PHSM.getSellingFees(grossAmount),
-					totalSellingNet = grossAmount - sellingFees.totalFees;
+					sellingFees = PHSM.getSellingFees(grossAmount);
+				totalSellingNet = grossAmount - sellingFees.totalFees;
 			}
 			// if two arguments was passed, we'll use it as stock price and volume
 			else if (arguments.length === 2) {
 				const stockPrice = arguments[0], // set the first argument as stock price
 					volume = arguments[1], // set the second argument as volume
 					grossAmount = PHSM.getGrossAmount(stockPrice, volume),
-					sellingFees = PHSM.getSellingFees(grossAmount),
-					totalSellingNet = grossAmount - sellingFees.totalFees;
+					sellingFees = PHSM.getSellingFees(grossAmount);
+				totalSellingNet = grossAmount - sellingFees.totalFees;
 			}
 			//}
 			// round-off to 4 decimal and remove trailing zeros
