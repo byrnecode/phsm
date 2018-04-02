@@ -15,4 +15,4 @@
 * probability computation ("what if I buy/sell at xx price, auto computation..")
 * change commission base on broker, have the ablity to change broker, perhaps have a ready-list of brokers with their commission
 * bullet proofing on functions parameters (null, number of params passed, type of data passed.. etc..)
-* optimized code! (variables, methods, etc..)
+* optimize code! (variables, methods, etc..)
