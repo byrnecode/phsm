@@ -11,8 +11,6 @@
 
 	PHSM.getPercentDiff(from, to)
 
-	PHSM.getBuyPreview(price, money)
-
 	PHSM.getGrossAmount(stockPrice, volume)
 
 	PHSM.getBuyingFees(grossAmount)
@@ -24,6 +22,8 @@
 	
 	PHSM.getTotalSellingNet(grossAmount)
 	PHSM.getTotalSellingNet(price, volume)
+
+	PHSM.getBuyPreview(price, money)
 	
 	PHSM.getAverage(arrayTransactions)
 	PHSM.getAverage(price, volume)

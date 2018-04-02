@@ -136,6 +136,52 @@ let PHSM = (function () {
 	};
 
 	// ==========================================================================
+	// public method to compute percent value
+	// params: int/float - percent, target
+	// return: int/float - computed value
+	// sample: What is 10% of 100? answer = 10
+	// where 10% = percent, 100 = target, return = 10
+	// ==========================================================================
+	const whatIsPercentOf = function (percent, target) {
+		let result = (percent / 100) * target;
+
+		// round-off to 4 decimal and remove trailing zeros
+		result = +result.toFixed(4);
+		return result;
+	};
+
+	// ==========================================================================
+	// public method to compute percent
+	// params: int/float - value, target
+	// return: int/float - computed percent
+	// sample: 10 is what percent of 100? answer = 10%
+	// where 10 = value, 100 = target, return = 10%
+	// ==========================================================================
+	const isWhatPercentOf = function (value, target) {
+		let result = (value / target) * 100;
+
+		// round-off to 4 decimal and remove trailing zeros
+		result = +result.toFixed(4);
+		return result;
+	};
+
+	// ==========================================================================
+	// public method to compute percent difference
+	// params: int/float - from, to
+	// return: int/float - computed percent difference
+	// sample: What is the percent difference from 50 to 100? answer = 100%
+	// where 50 = from, 100 = to, return = 100%
+	// ==========================================================================
+	const getPercentDiff = function (from, to) {
+		const diff = to - from;
+		let percentDiff = isWhatPercentOf(diff, from);
+
+		// round-off to 4 decimal and remove trailing zeros
+		percentDiff = +percentDiff.toFixed(4);
+		return percentDiff;
+	};
+
+	// ==========================================================================
 	// private function to compute Commission
 	// params: int/float - gross amount
 	// return: int/float - computed commission
@@ -227,83 +273,6 @@ let PHSM = (function () {
 		// round-off to 4 decimal and remove trailing zeros
 		average = +average.toFixed(4);
 		return average;
-	};
-
-	// ==========================================================================
-	// public method to compute percent value
-	// params: int/float - percent, target
-	// return: int/float - computed value
-	// sample: What is 10% of 100? answer = 10
-	// where 10% = percent, 100 = target, return = 10
-	// ==========================================================================
-	const whatIsPercentOf = function (percent, target) {
-		let result = (percent / 100) * target;
-
-		// round-off to 4 decimal and remove trailing zeros
-		result = +result.toFixed(4);
-		return result;
-	};
-
-	// ==========================================================================
-	// public method to compute percent
-	// params: int/float - value, target
-	// return: int/float - computed percent
-	// sample: 10 is what percent of 100? answer = 10%
-	// where 10 = value, 100 = target, return = 10%
-	// ==========================================================================
-	const isWhatPercentOf = function (value, target) {
-		let result = (value / target) * 100;
-
-		// round-off to 4 decimal and remove trailing zeros
-		result = +result.toFixed(4);
-		return result;
-	};
-
-	// ==========================================================================
-	// public method to compute percent difference
-	// params: int/float - from, to
-	// return: int/float - computed percent difference
-	// sample: What is the percent difference from 50 to 100? answer = 100%
-	// where 50 = from, 100 = to, return = 100%
-	// ==========================================================================
-	const getPercentDiff = function (from, to) {
-		const diff = to - from;
-		let percentDiff = isWhatPercentOf(diff, from);
-
-		// round-off to 4 decimal and remove trailing zeros
-		percentDiff = +percentDiff.toFixed(4);
-		return percentDiff;
-	};
-
-	// ==========================================================================
-	// public method to compute how many shares can you buy at certain price with certain money
-	// params: int/float - price, money
-	// return: object - max volume, gross amount, total cost
-	// ==========================================================================
-	const getBuyPreview = function (price, money) {
-		// we initialize every computation to assume the total cost
-		const boardLot = getBoardLot(price);
-		const boardLotSize = boardLot.size;
-		const minimumAmount = price * boardLotSize;
-		let canBuy = Math.floor(money / minimumAmount); // number of buyable boardlot
-		let maxVolume = canBuy * boardLotSize;
-		let grossAmount = getGrossAmount(price, maxVolume);
-		let totalCost = getTotalBuyingCost(grossAmount);
-
-		// since total cost must not exceed the current money
-		// we re-evaluate the values to include the charges
-		if (totalCost > money) {
-			canBuy--; // we decrement the number of buyable boardlot
-			maxVolume = canBuy * boardLotSize;
-			grossAmount = getGrossAmount(price, maxVolume);
-			totalCost = getTotalBuyingCost(grossAmount);
-		}
-
-		return {
-			maxVolume: maxVolume,
-			grossAmount: grossAmount,
-			totalCost: totalCost
-		};
 	};
 
 	// ==========================================================================
@@ -428,6 +397,37 @@ let PHSM = (function () {
 		// round-off to 4 decimal and remove trailing zeros
 		totalSellingNet = +totalSellingNet.toFixed(4);
 		return totalSellingNet;
+	};
+
+	// ==========================================================================
+	// public method to compute how many shares can you buy at certain price with certain money
+	// params: int/float - price, money
+	// return: object - max volume, gross amount, total cost
+	// ==========================================================================
+	const getBuyPreview = function (price, money) {
+		// we initialize every computation to assume the total cost
+		const boardLot = getBoardLot(price);
+		const boardLotSize = boardLot.size;
+		const minimumAmount = price * boardLotSize;
+		let canBuy = Math.floor(money / minimumAmount); // number of buyable boardlot
+		let maxVolume = canBuy * boardLotSize;
+		let grossAmount = getGrossAmount(price, maxVolume);
+		let totalCost = getTotalBuyingCost(grossAmount);
+
+		// since total cost must not exceed the current money
+		// we re-evaluate the values to include the charges
+		if (totalCost > money) {
+			canBuy--; // we decrement the number of buyable boardlot
+			maxVolume = canBuy * boardLotSize;
+			grossAmount = getGrossAmount(price, maxVolume);
+			totalCost = getTotalBuyingCost(grossAmount);
+		}
+
+		return {
+			maxVolume: maxVolume,
+			grossAmount: grossAmount,
+			totalCost: totalCost
+		};
 	};
 
 	// ==========================================================================
@@ -608,12 +608,12 @@ let PHSM = (function () {
 		whatIsPercentOf,
 		isWhatPercentOf,
 		getPercentDiff,
-		getBuyPreview,
 		getGrossAmount,
 		getBuyingFees,
 		getSellingFees,
 		getTotalBuyingCost,
 		getTotalSellingNet,
+		getBuyPreview,
 		getAverage,
 		getPositionSize,
 		getExpectancyRate,
