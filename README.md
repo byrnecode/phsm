@@ -3,39 +3,39 @@
 
 ### Available public methods:
 
-	getBoardLot(price)
+	PHSM.getBoardLot(price)
 
-	whatIsPercentOf(percent, target)
+	PHSM.whatIsPercentOf(percent, target)
 
-	isWhatPercentOf(value, target)
+	PHSM.isWhatPercentOf(value, target)
 
-	getPercentDiff(from, to)
+	PHSM.getPercentDiff(from, to)
 
-	getBuyPreview(price, money)
+	PHSM.getBuyPreview(price, money)
 
-	getGrossAmount(stockPrice, volume)
+	PHSM.getGrossAmount(stockPrice, volume)
 
-	getBuyingFees(grossAmount)
+	PHSM.getBuyingFees(grossAmount)
 
-	getSellingFees(grossAmount)
+	PHSM.getSellingFees(grossAmount)
 	
-	getTotalBuyingCost(grossAmount)
-	getTotalBuyingCost(price, volume)
+	PHSM.getTotalBuyingCost(grossAmount)
+	PHSM.getTotalBuyingCost(price, volume)
 	
-	getTotalSellingNet(grossAmount)
-	getTotalSellingNet(price, volume)
+	PHSM.getTotalSellingNet(grossAmount)
+	PHSM.getTotalSellingNet(price, volume)
 	
-	getAverage(arrayTransactions)
-	getAverage(price, volume)
+	PHSM.getAverage(arrayTransactions)
+	PHSM.getAverage(price, volume)
 	
-	getPositionSize(capital, riskPercent, stopLossPercent)
+	PHSM.getPositionSize(capital, riskPercent, stopLossPercent)
 	
-	getExpectancyRate(winRate, aveWin, lossRate, aveLoss, aveRiskAmount)
+	PHSM.getExpectancyRate(winRate, aveWin, lossRate, aveLoss, aveRiskAmount)
 	
-	getProfit(sellingPrice, myAveragePrice, volume)
+	PHSM.getProfit(sellingPrice, myAveragePrice, volume)
 	
-	getBreakEvenPrice() // todo
+	PHSM.getBreakEvenPrice() // todo
 	
-	getHighLow(arr)
+	PHSM.getHighLow(arr)
 	
-	getCompounding(amount, percent, cycle, additionPerCycle(optional))
+	PHSM.getCompounding(amount, percent, cycle, additionPerCycle(optional))
