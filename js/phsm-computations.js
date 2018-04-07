@@ -350,7 +350,8 @@ let PHSM = (function () {
 		//if (arguments[0].constructor === Number) {
 		// if only one argument was passed, we'll use it as gross amount
 		if (arguments.length === 1) {
-			const grossAmount = arguments[0]; // set the first argument as gross amount
+			let grossAmount = arguments[0]; // set the first argument as gross amount
+			grossAmount = (grossAmount === '') ? 0 : parseFloat(grossAmount);
 			const buyingFees = getBuyingFees(grossAmount);
 			totalBuyingCost = grossAmount + buyingFees.totalFees;
 		}
@@ -575,6 +576,11 @@ let PHSM = (function () {
 	// return: int/float - compunded amount, cycle, amount increase, percent increase, total investment
 	// ==========================================================================
 	const getCompounding = function (amount, percent, cycle, additionPerCycle = 0) {
+		amount = parseFloat(amount);
+		percent = parseFloat(percent);
+		cycle = parseFloat(cycle);
+		additionPerCycle = (additionPerCycle === '') ? 0 : parseFloat(additionPerCycle);
+
 		const totalInvestment = amount + (additionPerCycle * (cycle - 1)); // get total investment including additionPerCycle for every cycle
 
 		for (let i = 0; i < cycle; i++) {
