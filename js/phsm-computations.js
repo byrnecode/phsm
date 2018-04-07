@@ -9,7 +9,7 @@ let PHSM = (function () {
 		vat: 12, // % of commission
 		pseTransFee: 0.005, // % of gross amount
 		sccp: 0.01, // % of gross amount
-		salesTax: 0.5 // % of gross amount
+		salesTax: 0.6 // % of gross amount
 	};
 
 	// Board Lot Table (minimum allowed shares at certain price range)
