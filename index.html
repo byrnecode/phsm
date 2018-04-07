@@ -5,10 +5,238 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Test Runner</title>
+    <title>PHSM Tools</title>
+
+    <link rel="stylesheet" href="css/bootstrap-darkly.css">
   </head>
   <body>
 
+  	<div id="phsm-app" class="container">
+  		<div class="row">
+  			<div class="col-lg-6">
+
+					<div class="row py-5 border-bottom">
+						<div class="col-12">What is</div>
+						<div class="col-12"><input class="form-control" type="number" v-model="whatIsPercentOfArg1"></div>
+						<div class="col-12">percent of</div>
+						<div class="col-12"><input class="form-control" type="number" v-model="whatIsPercentOfArg2"></div>
+						<div class="col-12">= {{ whatIsPercentOf }}</div>
+					</div>
+
+					<div class="row py-5 border-bottom">
+						<div class="col-12"><input class="form-control" type="number" v-model="isWhatPercentOfArg1"></div>
+						<div class="col-12">is what percent of</div>
+						<div class="col-12"><input class="form-control" type="number" v-model="isWhatPercentOfArg2"></div>
+						<div class="col-12" v-if="isWhatPercentOf">= {{ isWhatPercentOf }}</div>
+						<div class="col-12" v-else="isWhatPercentOf">= 0</div>
+					</div>
+
+					<div class="row py-5 border-bottom">
+						<div class="col-12">Get percent difference between</div>
+						<div class="col-12"><input class="form-control" type="number" v-model="percentDiffArg1"></div>
+						<div class="col-12">and</div>
+						<div class="col-12"><input class="form-control" type="number" v-model="percentDiffArg2"></div>
+						<div class="col-12" v-if="percentDiff">= {{ percentDiff }}</div>
+						<div class="col-12" v-else="percentDiff">= 0</div>
+					</div>
+
+					<div class="row py-5 border-bottom">
+						<div class="col-12">Get Board Lot</div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Price" v-model="boardLotArg1"></div>
+						<div class="col-12">= {{ boardLot }}</div>
+					</div>
+
+					<div class="row py-5 border-bottom">
+						<div class="col-12">Get Gross Amount</div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Price"  v-model="grossAmountArg1"></div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Volume" v-model="grossAmountArg2"></div>
+						<div class="col-12">= {{ grossAmount }}</div>
+					</div>
+
+					<div class="row py-5 border-bottom">
+						<div class="col-12">Get Buying Fees</div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Gross Amount" v-model="buyingFeesArg1"></div>
+						<div class="col-12">
+							<div class="table-responsive">
+								<table class="table table-sm table-bordered mt-3">
+									<thead>
+										<tr>
+											<th v-for="(value, key) in buyingFees">{{ key }}</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td v-for="(value, key) in buyingFees">{{ value }}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+
+					<div class="row py-5 border-bottom">
+						<div class="col-12">Get Selling Fees</div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Gross Amount" v-model="sellingFeesArg1"></div>
+						<div class="col-12">
+							<div class="table-responsive">
+								<table class="table table-sm table-bordered mt-3">
+									<thead>
+										<tr>
+											<th v-for="(value, key) in sellingFees">{{ key }}</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td v-for="(value, key) in sellingFees">{{ value }}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+
+					<div class="row py-5">
+						<div class="col-12">Get Total Buying Cost</div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Gross Amount" v-model="totalBuyingCostArg1"></div>
+						<div class="col-12">= {{ totalBuyingCost1 }}</div>
+					</div>
+
+					<div class="row py-5 border-bottom">
+						<div class="col-12">Get Total Buying Cost</div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Price" v-model="totalBuyingCostArg2"></div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Volume" v-model="totalBuyingCostArg3"></div>
+						<div class="col-12">= {{ totalBuyingCost2 }}</div>
+					</div>
+
+					<div class="row py-5">
+						<div class="col-12">Get Total Selling Net</div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Gross Amount" v-model="totalSellingNetArg1"></div>
+						<div class="col-12">= {{ totalSellingNet1 }}</div>
+					</div>
+
+					<div class="row py-5 border-bottom">
+						<div class="col-12">Get Total Selling Net</div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Price" v-model="totalSellingNetArg2"></div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Volume" v-model="totalSellingNetArg3"></div>
+						<div class="col-12">= {{ totalSellingNet2 }}</div>
+					</div>
+
+					<div class="row py-5 border-bottom">
+						<div class="col-12">Get Buy Preview</div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Price" v-model="buyPreviewArg1"></div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Money" v-model="buyPreviewArg2"></div>
+						<div class="col-12">
+							<div class="table-responsive">
+								<table class="table table-sm table-bordered mt-3">
+									<thead>
+										<tr>
+											<th v-for="(value, key) in buyPreview">{{ key }}</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td v-for="(value, key) in buyPreview">{{ value }}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+
+					<div class="row py-5 border-bottom">
+						<div class="col-12">Get Average</div>
+						<div class="col-12"><button class="btn btn-primary btn-sm">Add another transaction</button></div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Price" v-model="averageArg1"></div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Volume" v-model="averageArg2"></div>
+						<div class="col-12">= {{ average }}</div>
+					</div>
+
+					<div class="row py-5 border-bottom">
+						<div class="col-12">Get Profit</div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Selling Price" v-model="profitArg1"></div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="My Average Price" v-model="profitArg2"></div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Volume" v-model="profitArg3"></div>
+						<div class="col-12">
+							<div class="table-responsive">
+								<table class="table table-sm table-bordered mt-3">
+									<thead>
+										<tr>
+											<th v-for="(value, key) in profit">{{ key }}</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td v-for="(value, key) in profit">{{ value }}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+
+					<div class="row py-5 border-bottom">
+						<div class="col-12">Get Position Size</div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Capital" v-model="positionSizeArg1"></div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Risk Percent" v-model="positionSizeArg2"></div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Stop Loss Percent" v-model="positionSizeArg3"></div>
+						<div class="col-12">
+							<div class="table-responsive">
+								<table class="table table-sm table-bordered mt-3">
+									<thead>
+										<tr>
+											<th v-for="(value, key) in positionSize">{{ key }}</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td v-for="(value, key) in positionSize">{{ value }}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+
+					<div class="row py-5 border-bottom">
+						<div class="col-12">Get Expectancy Rate</div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Win Rate %" v-model="expectancyRateArg1"></div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Average Win" v-model="expectancyRateArg2"></div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Loss Rate %" v-model="expectancyRateArg3"></div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Average Loss" v-model="expectancyRateArg4"></div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Average Risk Amount" v-model="expectancyRateArg5"></div>
+						<div class="col-12">= {{ expectancyRate }}</div>
+					</div>
+
+					<div class="row py-5 border-bottom">
+						<div class="col-12">Get Compounding</div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Amount" v-model="compoundingArg1"></div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Return Percent" v-model="compoundingArg2"></div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Cycle" v-model="compoundingArg3"></div>
+						<div class="col-12"><input class="form-control" type="number" placeholder="Addition per Cycle (optional)" v-model="compoundingArg4"></div>
+						<div class="col-12">
+							<div class="table-responsive">
+								<table class="table table-sm table-bordered mt-3">
+									<thead>
+										<tr>
+											<th v-for="(value, key) in compounding">{{ key }}</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td v-for="(value, key) in compounding">{{ value }}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+
+				</div>
+  		</div>
+		</div>
+		
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="js/phsm-computations.js"></script>
+    <script src="js/main.js"></script>
   </body>
 </html>
