@@ -27,8 +27,7 @@
 						<div class="col-12"><input class="form-control" type="number" v-model="isWhatPercentOfArg1"></div>
 						<div class="col-12">is what percent of</div>
 						<div class="col-12"><input class="form-control" type="number" v-model="isWhatPercentOfArg2"></div>
-						<div class="col-12" v-if="isWhatPercentOf">= {{ isWhatPercentOf }}</div>
-						<div class="col-12" v-else="isWhatPercentOf">= 0</div>
+						<div class="col-12">= {{ isWhatPercentOf }} %</div>
 					</div>
 
 					<div class="row py-5 border-bottom">
@@ -36,14 +35,28 @@
 						<div class="col-12"><input class="form-control" type="number" v-model="percentDiffArg1"></div>
 						<div class="col-12">and</div>
 						<div class="col-12"><input class="form-control" type="number" v-model="percentDiffArg2"></div>
-						<div class="col-12" v-if="percentDiff">= {{ percentDiff }}</div>
-						<div class="col-12" v-else="percentDiff">= 0</div>
+						<div class="col-12">= {{ percentDiff }} %</div>
 					</div>
 
 					<div class="row py-5 border-bottom">
 						<div class="col-12">Get Board Lot</div>
 						<div class="col-12"><input class="form-control" type="number" placeholder="Price" v-model="boardLotArg1"></div>
-						<div class="col-12">= {{ boardLot }}</div>
+						<div class="col-12">
+							<div class="table-responsive">
+								<table class="table table-sm table-bordered mt-3">
+									<thead>
+										<tr>
+											<th v-for="(value, key) in boardLot">{{ key }}</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td v-for="(value, key) in boardLot">{{ value }}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
 					</div>
 
 					<div class="row py-5 border-bottom">

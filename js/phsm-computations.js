@@ -100,7 +100,7 @@ let PHSM = (function () {
 		},
 		{
 			from: 5000.0000,
-			to: 9999.0000,
+			to: 999999.0000,
 			tick: 5.0000,
 			size: 5
 		}
@@ -128,7 +128,10 @@ let PHSM = (function () {
 				};
 				break;
 			} else {
-				result = "Price is out-of-range by fluctuation or tick size!";
+				result = {
+					tick: 0,
+					size: 0
+				}
 			}
 		}
 
@@ -142,7 +145,7 @@ let PHSM = (function () {
 	// sample: What is 10% of 100? answer = 10
 	// where 10% = percent, 100 = target, return = 10
 	// ==========================================================================
-	const whatIsPercentOf = function (percent, target) {
+	const whatIsPercentOf = function (percent = 0, target = 0) {
 		let result = (percent / 100) * target;
 
 		// round-off to 4 decimal and remove trailing zeros
@@ -157,11 +160,21 @@ let PHSM = (function () {
 	// sample: 10 is what percent of 100? answer = 10%
 	// where 10 = value, 100 = target, return = 10%
 	// ==========================================================================
-	const isWhatPercentOf = function (value, target) {
-		let result = (value / target) * 100;
+	const isWhatPercentOf = function (value = 0, target = 0) {
+		let result = 0;
 
-		// round-off to 4 decimal and remove trailing zeros
-		result = +result.toFixed(4);
+		// type checking
+		value = (value === '0') ? 0 : parseFloat(value);
+		target = (target === '0') ? 0 : parseFloat(target);
+
+		// because 0 divided by 0 is evaluating to NaN
+		// we need to do some checking before computation
+		if ( value && target ) {
+			result = (value / target) * 100;
+			// round-off to 4 decimal and remove trailing zeros
+			result = +result.toFixed(4);
+		}
+
 		return result;
 	};
 
@@ -172,7 +185,7 @@ let PHSM = (function () {
 	// sample: What is the percent difference from 50 to 100? answer = 100%
 	// where 50 = from, 100 = to, return = 100%
 	// ==========================================================================
-	const getPercentDiff = function (from, to) {
+	const getPercentDiff = function (from = 0, to = 0) {
 		const diff = to - from;
 		let percentDiff = isWhatPercentOf(diff, from);
 
@@ -266,12 +279,18 @@ let PHSM = (function () {
 	// params: int/float - total cost, total volume
 	// return: int/float - computed overall average
 	// ==========================================================================
-	const computeAverage = function (totalCost, totalVolume) {
-		// compute for average
-		let average = totalCost / totalVolume;
+	const computeAverage = function (totalCost = 0, totalVolume = 0) {
+		let average = 0;
 
-		// round-off to 4 decimal and remove trailing zeros
-		average = +average.toFixed(4);
+		// because 0 divided by 0 is evaluating to NaN
+		// we need to do some checking before computation
+		if (totalCost > 0 && totalVolume > 0) {
+			// compute for average
+			average = totalCost / totalVolume;
+			// round-off to 4 decimal and remove trailing zeros
+			average = +average.toFixed(4);
+		}
+
 		return average;
 	};
 
@@ -280,7 +299,7 @@ let PHSM = (function () {
 	// params: int/float - stock price, volume
 	// return: int/float - computed gross amount
 	// ==========================================================================
-	const getGrossAmount = function (stockPrice, volume) {
+	const getGrossAmount = function (stockPrice = 0, volume = 0) {
 		// get gross amount by multiplying stock price * volume
 		let grossAmount = stockPrice * volume;
 
@@ -405,23 +424,32 @@ let PHSM = (function () {
 	// params: int/float - price, money
 	// return: object - max volume, gross amount, total cost
 	// ==========================================================================
-	const getBuyPreview = function (price, money) {
+	const getBuyPreview = function (price = 0, money = 0) {
+		let maxVolume = 0;
+		let grossAmount = 0;
+		let totalCost = 0;
+
 		// we initialize every computation to assume the total cost
 		const boardLot = getBoardLot(price);
 		const boardLotSize = boardLot.size;
 		const minimumAmount = price * boardLotSize;
-		let canBuy = Math.floor(money / minimumAmount); // number of buyable boardlot
-		let maxVolume = canBuy * boardLotSize;
-		let grossAmount = getGrossAmount(price, maxVolume);
-		let totalCost = getTotalBuyingCost(grossAmount);
-
-		// since total cost must not exceed the current money
-		// we re-evaluate the values to include the charges
-		if (totalCost > money) {
-			canBuy--; // we decrement the number of buyable boardlot
+		
+		// because 0 divided by 0 is evaluating to NaN
+		// we need to do some checking before computation
+		if (money > 0 && minimumAmount > 0) {
+			let canBuy = Math.floor(money / minimumAmount); // number of buyable boardlot
 			maxVolume = canBuy * boardLotSize;
 			grossAmount = getGrossAmount(price, maxVolume);
 			totalCost = getTotalBuyingCost(grossAmount);
+
+			// since total cost must not exceed the current money
+			// we re-evaluate the values to include the charges
+			if (totalCost > money) {
+				canBuy--; // we decrement the number of buyable boardlot
+				maxVolume = canBuy * boardLotSize;
+				grossAmount = getGrossAmount(price, maxVolume);
+				totalCost = getTotalBuyingCost(grossAmount);
+			}
 		}
 
 		return {
@@ -483,13 +511,20 @@ let PHSM = (function () {
 	// return: int/float - position size in amount
 	// view here for more info on position sizing: http://www.chrisperruna.com/2007/09/18/reinforce-position-sizing/
 	// ==========================================================================
-	const getPositionSize = function (capital, riskPercent, stopLossPercent) {
-		let riskAmount;
-		let positionSize;
+	const getPositionSize = function (capital = 0, riskPercent = 0, stopLossPercent = 0) {
+		let riskAmount = 0;
+		let positionSize = 0;
 
 		riskAmount = whatIsPercentOf(riskPercent, capital);
-		positionSize = (riskAmount / stopLossPercent) * 100;
-		positionSize = +positionSize.toFixed(4);
+
+		// because 0 divided by 0 is evaluating to NaN
+		// we need to do some checking before computation
+		if (riskAmount > 0 && stopLossPercent > 0) {
+			positionSize = (riskAmount / stopLossPercent) * 100;
+			positionSize = +positionSize.toFixed(4);
+			// position size shouldn't exceed capital
+			positionSize = (positionSize > capital) ? capital : positionSize;
+		}
 
 		return {
 			riskAmount,
@@ -520,7 +555,7 @@ let PHSM = (function () {
 	// params: int/float - stock last price, "my" average price, volume
 	// return: object - actual profit, percent profit
 	// ==========================================================================
-	const getProfit = function (sellingPrice, myAveragePrice, volume) {
+	const getProfit = function (sellingPrice = 0, myAveragePrice = 0, volume = 0) {
 
 		// calculate total buying cost
 		let totalCost = myAveragePrice * volume;
@@ -576,26 +611,37 @@ let PHSM = (function () {
 	// return: int/float - compunded amount, cycle, amount increase, percent increase, total investment
 	// ==========================================================================
 	const getCompounding = function (amount, percent, cycle, additionPerCycle = 0) {
-		amount = parseFloat(amount);
-		percent = parseFloat(percent);
-		cycle = parseFloat(cycle);
-		additionPerCycle = (additionPerCycle === '') ? 0 : parseFloat(additionPerCycle);
+		let amountIncrease = 0;
+		let percentIncrease = 0;
+		let totalInvestment = 0;
 
-		const totalInvestment = amount + (additionPerCycle * (cycle - 1)); // get total investment including additionPerCycle for every cycle
+		if (amount && percent && cycle) {
+			amount = parseFloat(amount);
+			percent = parseFloat(percent);
+			cycle = parseFloat(cycle);
+			additionPerCycle = additionPerCycle ? parseFloat(additionPerCycle) : 0;
 
-		for (let i = 0; i < cycle; i++) {
-			const interest = whatIsPercentOf(percent, amount);
-			// check if last iteration
-			if (i === cycle - 1) {
-				amount += interest;
+			totalInvestment = amount + (additionPerCycle * (cycle - 1)); // get total investment including additionPerCycle for every cycle
+
+			for (let i = 0; i < cycle; i++) {
+				const interest = whatIsPercentOf(percent, amount);
+				// check if last iteration
+				if (i === cycle - 1) {
+					amount += interest;
+				}
+				else {
+					amount += interest + additionPerCycle;
+				}
 			}
-			else {
-				amount += interest + additionPerCycle;
-			}
+
+			percentIncrease = getPercentDiff(totalInvestment, amount);
+			amountIncrease = amount - totalInvestment;
+			amountIncrease = +amountIncrease.toFixed(4);
 		}
-
-		const percentIncrease = getPercentDiff(totalInvestment, amount);
-		const amountIncrease = amount - totalInvestment;
+		else {
+			amount = 0;
+			cycle = 0;
+		}
 
 		return {
 			compoundedAmount: amount,
